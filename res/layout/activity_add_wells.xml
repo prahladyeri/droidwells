@@ -1,24 +1,56 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/addwells_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.prahladyeri.android.droidwells.AddWellsActivity" >
+    tools:context=".AddWellsActivity" >
 
     <EditText
-        android:id="@+id/editText1"
+        android:id="@+id/txtnewdayCompanyName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="78dp"
-        android:layout_marginTop="37dp"
-        android:ems="10" >
+        android:ems="10"
+        android:hint="Company Name" >
 
         <requestFocus />
     </EditText>
+
+    <EditText
+        android:id="@+id/txtnewdayWellSiteName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/txtnewdayCompanyName"
+        android:layout_below="@+id/txtnewdayCompanyName"
+        android:ems="10"
+        android:hint="Well Site name" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/txtnewdayWellSiteName"
+        android:layout_below="@+id/txtnewdayWellSiteName"
+        android:text="Tanks:"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <Button
+        android:id="@+id/cmdaddwellsAddTank"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView2"
+        android:layout_below="@+id/textView2"
+        android:text="ADD TANK" />
+
+    <Button
+        android:id="@+id/cmdaddwellsSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:text="SAVE" />
 
 </RelativeLayout>

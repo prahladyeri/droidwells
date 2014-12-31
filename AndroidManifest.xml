@@ -30,6 +30,18 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.prahladyeri.android.droidwells.MainActivity" />
         </activity>
+        <activity
+            android:name=".DeleteWellsActivity"
+            android:label="@string/title_activity_delete_wells"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.prahladyeri.android.droidwells.MainActivity" />
+        </activity>
+        <activity
+            android:name=".NewDayActivity"
+            android:label="@string/title_activity_new_day" >
+        </activity>
     </application>
 
 </manifest>

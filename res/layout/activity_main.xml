@@ -12,7 +12,8 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome to the Droid Wells App" />
+        android:text="WELCOME TO DROID WELLS\n\n"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <Button
         android:id="@+id/cmdmainAddWellSite"
