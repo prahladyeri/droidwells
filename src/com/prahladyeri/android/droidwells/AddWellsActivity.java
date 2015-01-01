@@ -2,6 +2,7 @@ package com.prahladyeri.android.droidwells;
 
 import android.support.v7.app.ActionBarActivity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -135,7 +136,7 @@ public class AddWellsActivity extends ActionBarActivity implements OnClickListen
 			//db.execSQL("DELETE FROM TANKS WHERE SITE_ID="  );
 			EditText et1 = (EditText)findViewById(R.id.txtaddwellsCompanyName);
 			EditText et2= (EditText)findViewById(R.id.txtaddwellsWellSiteName);
-			Object[] ovals={
+			final Object[] ovals={
 					et1.getText().toString(),
 					et2.getText().toString()
 			};
@@ -145,7 +146,7 @@ public class AddWellsActivity extends ActionBarActivity implements OnClickListen
 			//Cursor cur= dbr.rawQuery("SELECT max(ID) from SITES;", null);
 			//db.endTransaction();
 			cur.moveToFirst();
-			Integer siteid= cur.getInt(0);
+			final Integer siteid= cur.getInt(0);
 			Device.ShowMessageDialog(this, siteid.toString());
 			//ADD TANKS TO D5ATABASE
 			db.execSQL("DELETE FROM TANKS WHERE SITE_ID="  + siteid );
@@ -155,10 +156,23 @@ public class AddWellsActivity extends ActionBarActivity implements OnClickListen
 				db.execSQL("INSERT INTO TANKS(SITE_ID,TANK_VIEW_ID,TANK_NUMBER) VALUES(?,?,?);", tvals);
 			}
 			//Toast.makeText(this, "Record Saved", Toast.LENGTH_LONG);
-			Device.ShowMessageDialog(this, "Site data saved.", MessageBoxType.OKOnly ,new DialogInterface.OnClickListener() {
+			Device.ShowMessageDialog(this, "Site data saved. Would you like to perform the Day Entry for this site?", MessageBoxType.YesNo ,new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					self.finish();
+					if (which==DialogInterface.BUTTON_POSITIVE)
+					{
+						final Integer tsiteid=siteid;
+						Intent intent=new Intent(AddWellsActivity.this, NewDayActivity.class);
+						Bundle b=new Bundle();
+						b.putString("SITE_NAME", ovals[1].toString());
+						b.putInt("SITE_ID", siteid );
+						intent.putExtras(b);
+						startActivityForResult(intent, 0);
+					}
+					else
+					{
+					}
 				}
 			});
 			break;

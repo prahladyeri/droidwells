@@ -12,6 +12,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
+import java.text.SimpleDateFormat;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -24,6 +25,7 @@ import android.os.Build;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
 
+
 enum MessageBoxType
 {
 	OKOnly,
@@ -34,6 +36,7 @@ enum MessageBoxType
 class Device 
 {
 	public static ArrayList<Integer> CheckedItems;
+	public static SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
 	
 	public static int getMaxKey(LinkedHashMap<Integer, String> dictionary)
 	{
