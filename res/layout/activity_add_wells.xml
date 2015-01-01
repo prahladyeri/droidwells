@@ -10,7 +10,7 @@
     tools:context=".AddWellsActivity" >
 
     <EditText
-        android:id="@+id/txtnewdayCompanyName"
+        android:id="@+id/txtaddwellsCompanyName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -20,11 +20,11 @@
     </EditText>
 
     <EditText
-        android:id="@+id/txtnewdayWellSiteName"
+        android:id="@+id/txtaddwellsWellSiteName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/txtnewdayCompanyName"
-        android:layout_below="@+id/txtnewdayCompanyName"
+        android:layout_alignLeft="@+id/txtaddwellsCompanyName"
+        android:layout_below="@+id/txtaddwellsCompanyName"
         android:ems="10"
         android:hint="Well Site name" />
 
@@ -32,8 +32,8 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/txtnewdayWellSiteName"
-        android:layout_below="@+id/txtnewdayWellSiteName"
+        android:layout_alignLeft="@+id/txtaddwellsWellSiteName"
+        android:layout_below="@+id/txtaddwellsWellSiteName"
         android:text="Tanks:"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 

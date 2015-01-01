@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 
 import android.app.AlertDialog;
@@ -34,7 +35,7 @@ class Device
 {
 	public static ArrayList<Integer> CheckedItems;
 	
-	public static int getMaxKey(HashMap<Integer, String> dictionary)
+	public static int getMaxKey(LinkedHashMap<Integer, String> dictionary)
 	{
 		int maxid=0;
 		for(Entry<Integer, String> entry : dictionary.entrySet())
