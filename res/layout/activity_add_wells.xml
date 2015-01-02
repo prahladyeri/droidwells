@@ -46,11 +46,20 @@
         android:text="ADD TANK" />
 
     <Button
-        android:id="@+id/cmdaddwellsSave"
+        android:id="@+id/cmdaddwellsCancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
+        android:layout_alignParentRight="true"
+        android:text="Cancel" />
+
+    <Button
+        android:id="@+id/cmdaddwellsSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/cmdaddwellsCancel"
+        android:layout_alignBottom="@+id/cmdaddwellsCancel"
+        android:layout_toLeftOf="@+id/cmdaddwellsCancel"
         android:text="SAVE" />
 
 </RelativeLayout>

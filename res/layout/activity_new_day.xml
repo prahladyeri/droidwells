@@ -9,14 +9,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.prahladyeri.android.droidwells.NewDayActivity" >
 
-    <Button
-        android:id="@+id/cmdnewdaySave"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:text="SAVE" />
-
     <TextView
         android:id="@+id/lblnewdayDate"
         android:layout_width="wrap_content"
@@ -31,7 +23,24 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/lblnewdayDate"
         android:layout_alignBottom="@+id/lblnewdayDate"
-        android:layout_centerHorizontal="true"
+        android:layout_alignParentRight="true"
         android:text="Site Name" />
+
+    <Button
+        android:id="@+id/cmdnewdayCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="Cancel" />
+
+    <Button
+        android:id="@+id/cmdnewdaySave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/cmdnewdayCancel"
+        android:layout_alignBottom="@+id/cmdnewdayCancel"
+        android:layout_toLeftOf="@+id/cmdnewdayCancel"
+        android:text="SAVE" />
 
 </RelativeLayout>

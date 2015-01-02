@@ -1,6 +1,7 @@
 package com.prahladyeri.android.droidwells;
 
 import android.support.v7.app.ActionBarActivity;
+import android.text.InputFilter;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -37,6 +38,7 @@ public class AddWellsActivity extends ActionBarActivity implements OnClickListen
 		
 		((Button)findViewById(R.id.cmdaddwellsAddTank)).setOnClickListener(this);
 		((Button)findViewById(R.id.cmdaddwellsSave)).setOnClickListener(this);
+		((Button)findViewById(R.id.cmdaddwellsCancel)).setOnClickListener(this);
 		tanks.clear();
 		
 		Bundle b=this.getIntent().getExtras();
@@ -97,17 +99,21 @@ public class AddWellsActivity extends ActionBarActivity implements OnClickListen
 		 RelativeLayout.LayoutParams params =null;
 		 
 		 //create edittext
-		EditText et=new EditText(this);
+		EditText ed=new EditText(this);
 		 params=new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		 params.addRule(RelativeLayout.BELOW, lastcontrol.getId());
 		 if (maxid==1001) {
 			 params.topMargin+=20;
 		 }
-		 et.setId(maxid);
-		 et.setLayoutParams(params);
-		 et.setHint("Tank #");//maxid.toString()
-		 et.setText(tankNumber);
-		 layout.addView(et);
+		 ed.setId(maxid);
+		 ed.setLayoutParams(params);
+		 //et.setMaxEms(4);
+		 //et.setEms(4);
+		 //et.setMaxWidth(maxpixels);
+		 ed.setFilters(new InputFilter[] {new InputFilter.LengthFilter(4)});
+		 ed.setHint("Tank #");//maxid.toString()
+		 ed.setText(tankNumber);
+		 layout.addView(ed);
 		 
 		 //create a delete button
 		 Button button=new Button(this);
@@ -128,7 +134,38 @@ public class AddWellsActivity extends ActionBarActivity implements OnClickListen
 		case R.id.cmdaddwellsAddTank:
 			addTank("");
 			break;
+		case R.id.cmdaddwellsCancel:
+			this.finish();
+			break;
 		case R.id.cmdaddwellsSave:
+			//VALIDATION STARTS
+			EditText et=null;
+			et=(EditText)findViewById(R.id.txtaddwellsCompanyName);
+			if (et.getText().toString().length()==0){
+				Device.ShowMessageDialog(this, "Company name cannot be blank");
+				return;
+			}
+			
+			et=(EditText)findViewById(R.id.txtaddwellsWellSiteName);
+			if (et.getText().toString().length()==0){
+				Device.ShowMessageDialog(this, "Well site name cannot be blank");
+				return;
+			}
+			
+			for (Entry<Integer, String> entry : tanks.entrySet() ){
+				et=(EditText)findViewById(entry.getKey());
+				String tanknum = et.getText().toString();
+				if (tanknum.length()==0) {
+					Device.ShowMessageDialog(this, "Tank number not entered for Tank " + Integer.toString(entry.getKey() - 1000));
+					return;
+				}
+				else{
+					entry.setValue(et.getText().toString());
+					//tanks.put(entry.getKey(), value)
+				}
+			}
+			//VALIDATION ENDS
+			
 			//ADD SITE TO DATABASE
 			DbHelper dbHelper=new DbHelper(this);
 			SQLiteDatabase db= dbHelper.getWritableDatabase();
@@ -148,7 +185,7 @@ public class AddWellsActivity extends ActionBarActivity implements OnClickListen
 			cur.moveToFirst();
 			final Integer siteid= cur.getInt(0);
 			Device.ShowMessageDialog(this, siteid.toString());
-			//ADD TANKS TO D5ATABASE
+			//ADD TANKS TO DATABASE
 			db.execSQL("DELETE FROM TANKS WHERE SITE_ID="  + siteid );
 			
 			for (Entry<Integer, String> entry:tanks.entrySet() ){

@@ -3,6 +3,8 @@ package com.prahladyeri.android.droidwells;
 import java.util.Date;
 
 import android.support.v7.app.ActionBarActivity;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
@@ -26,12 +28,13 @@ public class NewDayActivity extends ActionBarActivity implements OnClickListener
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_new_day);
 		((Button)findViewById(R.id.cmdnewdaySave)).setOnClickListener(this);
+		((Button)findViewById(R.id.cmdnewdayCancel)).setOnClickListener(this);
 		
 		Bundle b= this.getIntent().getExtras();
 		this.SITE_ID= b.getInt("SITE_ID");
 		String sitename = b.getString("SITE_NAME");
 		((TextView)findViewById(R.id.lblnewdayDate)).setText(Device.sdf.format(new Date()));
-		((TextView)findViewById(R.id.lblnewdaySiteName)).setText("Site Name: " + sitename);
+		((TextView)findViewById(R.id.lblnewdaySiteName)).setText("Site: " + sitename);
 		//SQLiteDatabase dbr=new DbHelper(this).getReadableDatabase();
 		//dbr.rawQuery("SELECT * FROM DAYENTRY", selectionArgs)
 		int lastcontrol = R.id.lblnewdaySiteName;
@@ -41,6 +44,8 @@ public class NewDayActivity extends ActionBarActivity implements OnClickListener
 		for(int i=0;i<this.FIELDS.length;i++)
 		{
 			ed=new EditText(this);
+			ed.setInputType(InputType.TYPE_CLASS_NUMBER);
+			ed.setFilters(new InputFilter[] {new InputFilter.LengthFilter(4)});
 			ed.setHint(this.FIELDS[i]);
 			ed.setId(1000 + i);
 			
@@ -98,7 +103,13 @@ public class NewDayActivity extends ActionBarActivity implements OnClickListener
 			values[0] = this.SITE_ID;
 			values[1] = new Date();
 			for(int i=0;i<this.FIELDS.length;i++) {
-				values[2 + i] = ((EditText)findViewById(1000 + i)).getText();
+				Object tobj = ((EditText)findViewById(1000 + i)).getText();
+				if (tobj.toString().length()==0)
+				{
+					Device.ShowMessageDialog(this, "Value not entered for Parameter " +  this.FIELDS[i]);
+					return;
+				}
+				values[2 + i] = tobj;
 			}
 			values[2 + FIELDS.length]=((EditText)findViewById(1000 + FIELDS.length)).getText();;  //10
 					
@@ -106,6 +117,9 @@ public class NewDayActivity extends ActionBarActivity implements OnClickListener
 			dbr.execSQL("INSERT INTO DAYENTRY(SITE_ID , FDATE , TP , CP , CHK , FLW , LP , TEMP , MCF , TOTAL , COMMENT)" + 
 			" VALUES(?,?,?,?,?,?,?,?,?,?,?)", values);
 			Toast.makeText(this, "Record saved", Toast.LENGTH_LONG);
+			this.finish();
+			break;
+		case R.id.cmdnewdayCancel:
 			this.finish();
 			break;
 		}
