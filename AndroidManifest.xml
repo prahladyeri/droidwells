@@ -7,9 +7,8 @@
     <uses-sdk
         android:minSdkVersion="11"
         android:targetSdkVersion="21" />
-    
-     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
- 
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -44,6 +43,14 @@
         <activity
             android:name=".NewDayActivity"
             android:label="@string/title_activity_new_day" >
+        </activity>
+        <activity
+            android:name=".NewDayTanksActivity"
+            android:label="@string/title_activity_new_day_tanks"
+            android:parentActivityName=".NewDayActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.prahladyeri.android.droidwells.NewDayActivity" />
         </activity>
     </application>
 

@@ -110,7 +110,7 @@ public class AddWellsActivity extends ActionBarActivity implements OnClickListen
 		 //et.setMaxEms(4);
 		 //et.setEms(4);
 		 //et.setMaxWidth(maxpixels);
-		 ed.setFilters(new InputFilter[] {new InputFilter.LengthFilter(4)});
+		 ed.setFilters(new InputFilter[] {new InputFilter.LengthFilter(8)});
 		 ed.setHint("Tank #");//maxid.toString()
 		 ed.setText(tankNumber);
 		 layout.addView(ed);

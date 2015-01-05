@@ -7,5 +7,6 @@
     <string name="title_activity_add_wells">Add Well Site</string>
     <string name="title_activity_delete_wells">DeleteWellsActivity</string>
     <string name="title_activity_new_day">New Day Entry</string>
+    <string name="title_activity_new_day_tanks">Tank Details</string>
 
 </resources>

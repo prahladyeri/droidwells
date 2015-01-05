@@ -1,10 +1,14 @@
 package com.prahladyeri.android.droidwells;
 
+import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.util.SparseIntArray;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
@@ -20,7 +24,16 @@ import android.widget.Toast;
 
 public class NewDayActivity extends ActionBarActivity implements OnClickListener {
 	private int SITE_ID=0;
-	private String[] FIELDS = {"TP", "CP", "CHK", "FLW", "LP" , "TEMP" , "MCF" , "TOTAL" };
+	private String[] FIELDS = {"TP", "CP", "CHK", "FLW", "DIFF", "LP" , "TEMP" , "MCF" , "TOTAL" };
+	private HashMap<Integer, int[]> TANKS = new HashMap<Integer, int[]>(); //tank_id::TOP,BTM
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		Device.ShowMessageDialog(this, "onActivityResult()");
+		//Bundle b=data.getExtras();
+		//this.TANKS = (HashMap<Integer, int[]>) b.getSerializable("TANKS");
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -29,6 +42,7 @@ public class NewDayActivity extends ActionBarActivity implements OnClickListener
 		setContentView(R.layout.activity_new_day);
 		((Button)findViewById(R.id.cmdnewdaySave)).setOnClickListener(this);
 		((Button)findViewById(R.id.cmdnewdayCancel)).setOnClickListener(this);
+		((Button)findViewById(R.id.cmdnewdayTanks)).setOnClickListener(this);
 		
 		Bundle b= this.getIntent().getExtras();
 		this.SITE_ID= b.getInt("SITE_ID");
@@ -45,7 +59,8 @@ public class NewDayActivity extends ActionBarActivity implements OnClickListener
 		{
 			ed=new EditText(this);
 			ed.setInputType(InputType.TYPE_CLASS_NUMBER);
-			ed.setFilters(new InputFilter[] {new InputFilter.LengthFilter(4)});
+			int slen = (this.FIELDS[i] == "TOTAL" ? 8 : 4);
+			ed.setFilters(new InputFilter[] {new InputFilter.LengthFilter(slen)});
 			ed.setHint(this.FIELDS[i]);
 			ed.setId(1000 + i);
 			
@@ -71,8 +86,6 @@ public class NewDayActivity extends ActionBarActivity implements OnClickListener
 		ed.setLayoutParams(params);
 		
 		layout.addView(ed);
-
-	
 	}
 
 	@Override
@@ -95,8 +108,20 @@ public class NewDayActivity extends ActionBarActivity implements OnClickListener
 	}
 
 	@Override
-	public void onClick(View view) {
+	public void onClick(View view) 
+	{
 		switch(view.getId()){
+		case R.id.cmdnewdayTanks:
+			//TANKS.put(1234, new int[] {10,20});
+			
+			Intent intent=new Intent(this, NewDayTanksActivity.class);
+			Bundle b=new Bundle();
+			b.putSerializable("TANKS", TANKS);
+			//b.putIntArray("TANKS", TANKS.get(1234));
+			b.putInt("SITE_ID", this.SITE_ID);
+			intent.putExtras(b);
+			startActivityForResult(intent, 0);
+			break;
 		case R.id.cmdnewdaySave:
 			//Save data to dayentry table
 			Object[] values=new Object[11]; // siteid + fdate + fields(8) + comment
@@ -111,12 +136,14 @@ public class NewDayActivity extends ActionBarActivity implements OnClickListener
 				}
 				values[2 + i] = tobj;
 			}
-			values[2 + FIELDS.length]=((EditText)findViewById(1000 + FIELDS.length)).getText();;  //10
+			values[2 + FIELDS.length]=((EditText)findViewById(1000 + FIELDS.length)).getText();  //10
 					
 			SQLiteDatabase dbr=new DbHelper(this).getWritableDatabase();
+			
+			dbr.execSQL("DELETE FROM DAYENTRY WHERE SITE_ID=? AND FDATE=?",new Object[] {this.SITE_ID, new Date()});
 			dbr.execSQL("INSERT INTO DAYENTRY(SITE_ID , FDATE , TP , CP , CHK , FLW , LP , TEMP , MCF , TOTAL , COMMENT)" + 
 			" VALUES(?,?,?,?,?,?,?,?,?,?,?)", values);
-			Toast.makeText(this, "Record saved", Toast.LENGTH_LONG);
+			Toast.makeText(this, "Record saved", Toast.LENGTH_LONG).show();
 			this.finish();
 			break;
 		case R.id.cmdnewdayCancel:

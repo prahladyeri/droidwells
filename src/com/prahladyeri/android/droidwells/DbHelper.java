@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DbHelper extends SQLiteOpenHelper {
 	
 	public static final String DB_NAME = "droidwells";
-	public static final int DB_VERSION = 1;
+	public static final int DB_VERSION = 2;
 
 	public DbHelper(Context context) {
 		super(context, DbHelper.DB_NAME, null, DbHelper.DB_VERSION);
@@ -25,6 +25,11 @@ public class DbHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		
+		if (newVersion==2 && oldVersion==1) {
+			//VERSION 2:
+			db.execSQL("CREATE TABLE DAYENTRY_TANKS(ID INTEGER PRIMARY KEY, DAYENTRY_ID INTEGER, TANK_ID INTEGER, TOP INTEGER, BTM INTEGER, FOREIGN KEY(DAYENTRY_ID) REFERENCES SITES(ID), FOREIGN KEY(TANK_ID) REFERENCES TANKS(ID) );");
+			db.execSQL("ALTER TABLE DAYENTRY ADD DIFF INTEGER;");
+			
+		}
 	}
 }

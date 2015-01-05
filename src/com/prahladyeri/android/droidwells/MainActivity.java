@@ -82,6 +82,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 								public void onClick(DialogInterface dialog, int which) {
 									if (which==DialogInterface.BUTTON_POSITIVE){
 										SQLiteDatabase db=new DbHelper(MainActivity.this).getWritableDatabase();
+										db.execSQL("DELETE FROM DAYENTRY_TANKS WHERE DAYENTRY_ID IN (SELECT ID FROM DAYENTRY WHERE SITE_ID=?)", new String[]{tsiteid.toString()});
 										db.execSQL("DELETE FROM DAYENTRY WHERE SITE_ID=?", new String[]{tsiteid.toString()});
 										db.execSQL("DELETE FROM TANKS WHERE SITE_ID=?", new String[]{tsiteid.toString()});
 										db.execSQL("DELETE FROM SITES WHERE ID=?", new String[]{tsiteid.toString()});
@@ -143,7 +144,6 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 					Export.ExportData(MainActivity.this, cur);
 				}
 			});
-			
 			break;
 		}
 		

@@ -9,23 +9,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.prahladyeri.android.droidwells.NewDayActivity" >
 
-    <TextView
-        android:id="@+id/lblnewdayDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:text="TextView" />
-
-    <TextView
-        android:id="@+id/lblnewdaySiteName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/lblnewdayDate"
-        android:layout_alignBottom="@+id/lblnewdayDate"
-        android:layout_alignParentRight="true"
-        android:text="Site Name" />
-
     <Button
         android:id="@+id/cmdnewdayCancel"
         android:layout_width="wrap_content"
@@ -42,5 +25,31 @@
         android:layout_alignBottom="@+id/cmdnewdayCancel"
         android:layout_toLeftOf="@+id/cmdnewdayCancel"
         android:text="SAVE" />
+
+    <TextView
+        android:id="@+id/lblnewdaySiteName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="Some very long site name"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/lblnewdayDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/lblnewdaySiteName"
+        android:text="01/01/2015" />
+
+    <Button
+        android:id="@+id/cmdnewdayTanks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/cmdnewdayCancel"
+        android:layout_alignLeft="@+id/cmdnewdaySave"
+        android:layout_marginBottom="14dp"
+        android:text="Tanks" />
 
 </RelativeLayout>
