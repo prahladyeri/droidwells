@@ -40,11 +40,20 @@
         android:text="Export CSV Data" />
 
     <Button
-        android:id="@+id/cmdmainDeleteWellSite"
+        android:id="@+id/cmdmainEmailCSVData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/cmdmainExportCSVData"
+        android:layout_alignRight="@+id/cmdmainExportCSVData"
         android:layout_below="@+id/cmdmainExportCSVData"
+        android:text="Email CSV Data" />
+
+    <Button
+        android:id="@+id/cmdmainDeleteWellSite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/cmdmainEmailCSVData"
+        android:layout_below="@+id/cmdmainEmailCSVData"
         android:text="Delete well site" />
 
 </RelativeLayout>

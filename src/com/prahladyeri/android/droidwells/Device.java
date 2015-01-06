@@ -24,6 +24,8 @@ import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.os.Build;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
+import android.text.InputType;
+import android.widget.EditText;
 
 
 enum MessageBoxType
@@ -37,6 +39,7 @@ class Device
 {
 	public static ArrayList<Integer> CheckedItems;
 	public static SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+	public static EditText input=null;
 	
 	public static int getMaxKey(LinkedHashMap<Integer, String> dictionary)
 	{
@@ -76,20 +79,25 @@ class Device
 	
 	public static void ShowMessageDialog(Context context, String message)
 	{
-		ShowDialog(context,message,MessageBoxType.OKOnly,new String[]{},false, null,null);
+		ShowDialog(context,message,MessageBoxType.OKOnly,new String[]{},false, null,null,false);
+	}
+	
+	public static void ShowInputDialog(Context context, String message, OnClickListener listener)
+	{
+		ShowDialog(context,message,MessageBoxType.OKOnly,new String[]{},false, listener,null,true);
 	}
 
 	public static void ShowMessageDialog(Context context, String message, MessageBoxType type , OnClickListener listener)
 	{
-		ShowDialog(context,message,type,new String[]{},false, listener,null);
+		ShowDialog(context,message,type,new String[]{},false, listener,null, false);
 	}
 	
 	public static void ShowListDialog(Context context, String message, String[] listItems, boolean isMultiChoice, OnClickListener listener)
 	{
 		if (isMultiChoice)
-			ShowDialog(context, message, MessageBoxType.OkCancel , listItems, isMultiChoice, listener,null);
+			ShowDialog(context, message, MessageBoxType.OkCancel , listItems, isMultiChoice, listener,null, false);
 		else
-			ShowDialog(context, message, MessageBoxType.OKOnly , listItems, isMultiChoice, null,listener);
+			ShowDialog(context, message, MessageBoxType.OKOnly , listItems, isMultiChoice, null,listener, false);
 	}
 	
 	public static void ShowDateDialog(Context context,String message,OnDateSetListener listener)
@@ -106,7 +114,7 @@ class Device
 		dlg.show();
 	}
 	
-	private static void ShowDialog(Context context, String message, MessageBoxType type , String[] listItems, boolean isMultiChoice, OnClickListener listener,OnClickListener selectedItemListener)
+	private static void ShowDialog(Context context, String message, MessageBoxType type , String[] listItems, boolean isMultiChoice, OnClickListener listener,OnClickListener selectedItemListener, boolean inputBox)
 	{
 		AlertDialog.Builder builder=new AlertDialog.Builder(context);
 		
@@ -139,8 +147,16 @@ class Device
 		}
 		else
 		{
-			builder.setTitle("DROID WELLS");
-			builder.setMessage(message);
+			builder.setTitle(R.string.app_name); //"DROID WELLS"
+			if (!inputBox) {
+				builder.setMessage(message);
+			}
+			else {
+				input=new EditText(context);
+				//et.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+				builder.setView(input);
+				builder.setMessage(message);
+			}
 		}
 		
 		if (listItems.length==0 || isMultiChoice)
@@ -208,6 +224,20 @@ class Device
 		{
 			return "";
 		}
+	}
+	
+	public static String makePlaceholders(int len) {
+	    if (len < 1) {
+	        // It will lead to an invalid query anyway ..
+	        throw new RuntimeException("No placeholders");
+	    } else {
+	        StringBuilder sb = new StringBuilder(len * 2 - 1);
+	        sb.append("?");
+	        for (int i = 1; i < len; i++) {
+	            sb.append(",?");
+	        }
+	        return sb.toString();
+	    }
 	}
 	
 }

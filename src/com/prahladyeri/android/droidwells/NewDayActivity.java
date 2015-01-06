@@ -1,6 +1,7 @@
 package com.prahladyeri.android.droidwells;
 
 import java.io.Serializable;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -9,6 +10,7 @@ import android.text.InputFilter;
 import android.text.InputType;
 import android.util.SparseIntArray;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.Menu;
@@ -30,9 +32,14 @@ public class NewDayActivity extends ActionBarActivity implements OnClickListener
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		Device.ShowMessageDialog(this, "onActivityResult()");
-		//Bundle b=data.getExtras();
-		//this.TANKS = (HashMap<Integer, int[]>) b.getSerializable("TANKS");
+//		Device.ShowMessageDialog(this, "onActivityResult()");
+		Bundle b=data.getExtras();
+		this.TANKS = (HashMap<Integer, int[]>) b.getSerializable("TANKS");
+		for (Integer key : TANKS.keySet()){
+//			Device.ShowMessageDialog(this, key.toString() + "::" + Integer.toString(TANKS.get(key)[0])
+//					+ "::" + Integer.toString(TANKS.get(key)[1])
+//					);
+		}
 	}
 
 	@Override
@@ -116,7 +123,7 @@ public class NewDayActivity extends ActionBarActivity implements OnClickListener
 			
 			Intent intent=new Intent(this, NewDayTanksActivity.class);
 			Bundle b=new Bundle();
-			b.putSerializable("TANKS", TANKS);
+			b.putSerializable("TANKS", this.TANKS);
 			//b.putIntArray("TANKS", TANKS.get(1234));
 			b.putInt("SITE_ID", this.SITE_ID);
 			intent.putExtras(b);
@@ -124,9 +131,15 @@ public class NewDayActivity extends ActionBarActivity implements OnClickListener
 			break;
 		case R.id.cmdnewdaySave:
 			//Save data to dayentry table
-			Object[] values=new Object[11]; // siteid + fdate + fields(8) + comment
+			Date newdate=null;
+			try {
+				newdate = Device.sdf.parse( Device.sdf.format(new Date()) );
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			Object[] values=new Object[12]; // siteid + fdate + fields(9) + comment
 			values[0] = this.SITE_ID;
-			values[1] = new Date();
+			values[1] = newdate;
 			for(int i=0;i<this.FIELDS.length;i++) {
 				Object tobj = ((EditText)findViewById(1000 + i)).getText();
 				if (tobj.toString().length()==0)
@@ -138,11 +151,23 @@ public class NewDayActivity extends ActionBarActivity implements OnClickListener
 			}
 			values[2 + FIELDS.length]=((EditText)findViewById(1000 + FIELDS.length)).getText();  //10
 					
-			SQLiteDatabase dbr=new DbHelper(this).getWritableDatabase();
+			SQLiteDatabase db=new DbHelper(this).getWritableDatabase();
+			SQLiteDatabase dbr=new DbHelper(this).getReadableDatabase();
 			
-			dbr.execSQL("DELETE FROM DAYENTRY WHERE SITE_ID=? AND FDATE=?",new Object[] {this.SITE_ID, new Date()});
-			dbr.execSQL("INSERT INTO DAYENTRY(SITE_ID , FDATE , TP , CP , CHK , FLW , LP , TEMP , MCF , TOTAL , COMMENT)" + 
-			" VALUES(?,?,?,?,?,?,?,?,?,?,?)", values);
+			db.execSQL("DELETE FROM DAYENTRY_TANKS WHERE DAYENTRY_ID IN (SELECT ID FROM DAYENTRY WHERE SITE_ID=? AND FDATE=?)",new Object[] {this.SITE_ID, newdate});
+			db.execSQL("DELETE FROM DAYENTRY WHERE SITE_ID=? AND FDATE=?",new Object[] {this.SITE_ID, newdate});
+			
+			db.execSQL("INSERT INTO DAYENTRY(SITE_ID , FDATE , TP , CP , CHK , FLW , DIFF , LP , TEMP , MCF , TOTAL , COMMENT)" + 
+			" VALUES(?,?,?,?,?,?,?,?,?,?,?,?)", values);
+			Cursor cur= dbr.rawQuery("SELECT last_insert_rowid();", null);
+			cur.moveToFirst();
+		 	Integer id= cur.getInt(0);
+		 	for (Integer key : TANKS.keySet()){
+		 		db.execSQL("INSERT INTO DAYENTRY_TANKS(DAYENTRY_ID,TANK_ID,TOP,BTM) VALUES (?,?,?,?);", 
+		 				new String[]{id.toString(), key.toString(), Integer.toString(TANKS.get(key)[0]), Integer.toString(TANKS.get(key)[1])});
+		 	}
+
+			
 			Toast.makeText(this, "Record saved", Toast.LENGTH_LONG).show();
 			this.finish();
 			break;

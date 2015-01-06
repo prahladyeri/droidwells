@@ -32,9 +32,9 @@ public class Export
 		return header + "\n" + body;
 	}
 	
-	public static void ExportData(Context context, Cursor cursor)
+	public static String ExportData(Context context, Cursor cursor, String filename)
 	{
-		String location= Environment.getExternalStorageDirectory() + "/droidwells.csv";
+		String location= Environment.getExternalStorageDirectory() + "/" + filename +  ".csv";
 		PrintWriter writer=null;
 		try {
 			writer = new PrintWriter(location);
@@ -49,7 +49,7 @@ public class Export
 			
 		writer.close();
 		
-		Toast.makeText(context, "CSV saved at " + location, Toast.LENGTH_LONG).show();
+		return location;
 		//((Activity)context).finish();
 	}
 
