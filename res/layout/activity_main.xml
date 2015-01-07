@@ -12,7 +12,7 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="WELCOME TO DROID WELLS\n\n"
+        android:text="WELCOME TO PUMPER PAL\n\n"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <Button
@@ -55,5 +55,13 @@
         android:layout_alignLeft="@+id/cmdmainEmailCSVData"
         android:layout_below="@+id/cmdmainEmailCSVData"
         android:text="Delete well site" />
+
+    <Button
+        android:id="@+id/cmdmainExit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/cmdmainDeleteWellSite"
+        android:text="Exit" />
 
 </RelativeLayout>

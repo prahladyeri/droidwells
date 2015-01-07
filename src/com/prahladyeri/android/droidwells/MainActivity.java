@@ -29,6 +29,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 		findViewById(R.id.cmdmainExportCSVData).setOnClickListener(this);
 		findViewById(R.id.cmdmainEmailCSVData).setOnClickListener(this);
 		findViewById(R.id.cmdmainNewDayData).setOnClickListener(this);
+		findViewById(R.id.cmdmainExit).setOnClickListener(this);
 	}
 
 	@Override
@@ -56,6 +57,16 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 		Cursor cur=null;
 		switch(view.getId())
 		{
+		case R.id.cmdmainExit:
+			Device.ShowMessageDialog(this, "Sure you want to exit " + getText(R.string.app_name), MessageBoxType.YesNo, new Dialog.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					if (which==dialog.BUTTON_POSITIVE){
+						MainActivity.this.finish();
+					}
+				}
+			});
+			break;
 		case R.id.cmdmainAddWellSite:
 			Intent addwells=new Intent(this,AddWellsActivity.class);
 			Bundle b=new Bundle();
