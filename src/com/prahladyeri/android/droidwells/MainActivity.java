@@ -170,7 +170,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 					}
 					//Cursor cur=dbr.rawQuery("SELECT FDATE,TP, CP, CHK, FLW, LP , TEMP , MCF , TOTAL,COMMENT  FROM DAYENTRY,SITES WHERE DAYENTRY.SITE_ID=SITES.ID AND SITE_ID=? ORDER BY FDATE DESC LIMIT 500", new String[]{s});
 					
-					Cursor cur=dbr.rawQuery("SELECT FDATE,TP, CP, CHK, FLW, LP , TEMP , MCF , TOTAL,COMMENT  FROM DAYENTRY,SITES WHERE DAYENTRY.SITE_ID=SITES.ID AND SITE_ID in (" + Device.makePlaceholders(Device.CheckedItems.size()) +  ") AND FDATE = '"  + yfdates[0]  + "' ORDER BY FDATE DESC LIMIT 500", sites);
+					Cursor cur=dbr.rawQuery("SELECT COMPANY_NAME, SITE_NAME, FDATE,TP, CP, CHK, FLW, LP , TEMP , MCF , TOTAL,COMMENT  FROM DAYENTRY,SITES WHERE DAYENTRY.SITE_ID=SITES.ID AND SITE_ID in (" + Device.makePlaceholders(Device.CheckedItems.size()) +  ") AND FDATE = '"  + yfdates[0]  + "' ORDER BY FDATE DESC LIMIT 500", sites);
 					fullFileName[0] = Export.ExportData(MainActivity.this, cur, ycompanies[0] + "-" + yfdates[0].substring(0, 10)); 
 					
 					if (viewid == R.id.cmdmainEmailCSVData) {

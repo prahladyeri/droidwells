@@ -27,7 +27,7 @@ import android.widget.Toast;
 public class NewDayActivity extends ActionBarActivity implements OnClickListener {
 	private int SITE_ID=0;
 	private String[] FIELDS = {"TP", "CP", "CHK", "FLW", "DIFF", "LP" , "TEMP" , "MCF" , "TOTAL" };
-	private HashMap<Integer, int[]> TANKS = new HashMap<Integer, int[]>(); //tank_id::TOP,BTM
+	private HashMap<Integer, int[]> TANKS = new HashMap<Integer, int[]>(); //tank_id::TOPFT,TOPIN,BTMFT,BTMIN
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -65,9 +65,9 @@ public class NewDayActivity extends ActionBarActivity implements OnClickListener
 		for(int i=0;i<this.FIELDS.length;i++)
 		{
 			ed=new EditText(this);
-			ed.setInputType(InputType.TYPE_CLASS_NUMBER);
+			ed.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
 			int slen = (this.FIELDS[i] == "TOTAL" ? 8 : 4);
-			ed.setFilters(new InputFilter[] {new InputFilter.LengthFilter(slen)});
+			ed.setFilters(new InputFilter[] {new InputFilter.LengthFilter(slen+3), new DecimalInputFilter(slen, 2)});
 			ed.setHint(this.FIELDS[i]);
 			ed.setId(1000 + i);
 			
@@ -147,6 +147,14 @@ public class NewDayActivity extends ActionBarActivity implements OnClickListener
 					Device.ShowMessageDialog(this, "Value not entered for Parameter " +  this.FIELDS[i]);
 					return;
 				}
+				try {
+					Float.parseFloat(tobj.toString());
+				}
+				catch(Exception ex){
+					Device.ShowMessageDialog(this, "Value of " + this.FIELDS[i] + " cannot be converted to a float.");
+					return;
+				}
+				
 				values[2 + i] = tobj;
 			}
 			values[2 + FIELDS.length]=((EditText)findViewById(1000 + FIELDS.length)).getText();  //10
@@ -162,12 +170,13 @@ public class NewDayActivity extends ActionBarActivity implements OnClickListener
 			Cursor cur= dbr.rawQuery("SELECT last_insert_rowid();", null);
 			cur.moveToFirst();
 		 	Integer id= cur.getInt(0);
-		 	for (Integer key : TANKS.keySet()){
-		 		db.execSQL("INSERT INTO DAYENTRY_TANKS(DAYENTRY_ID,TANK_ID,TOP,BTM) VALUES (?,?,?,?);", 
-		 				new String[]{id.toString(), key.toString(), Integer.toString(TANKS.get(key)[0]), Integer.toString(TANKS.get(key)[1])});
+		 	for (Integer key : TANKS.keySet()) {
+		 		//TODO: Remove hardcoding of TANKS size while inserting.
+		 		db.execSQL("INSERT INTO DAYENTRY_TANKS(DAYENTRY_ID,TANK_ID,TOPFT,TOPIN,BTMFT,BTMIN) VALUES (?,?,?,?,?,?);", 
+		 				new String[]{id.toString(), key.toString(), 
+		 				Integer.toString(TANKS.get(key)[0]), Integer.toString(TANKS.get(key)[1]), Integer.toString(TANKS.get(key)[2]), Integer.toString(TANKS.get(key)[3]) });
 		 	}
 
-			
 			Toast.makeText(this, "Record saved", Toast.LENGTH_LONG).show();
 			this.finish();
 			break;

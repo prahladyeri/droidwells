@@ -12,6 +12,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.text.SimpleDateFormat;
 
 import android.app.AlertDialog;
@@ -24,7 +26,9 @@ import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.os.Build;
 import android.provider.Settings.Secure;
 import android.telephony.TelephonyManager;
+import android.text.InputFilter;
 import android.text.InputType;
+import android.text.Spanned;
 import android.widget.EditText;
 
 
@@ -79,17 +83,17 @@ class Device
 	
 	public static void ShowMessageDialog(Context context, String message)
 	{
-		ShowDialog(context,message,MessageBoxType.OKOnly,new String[]{},false, null,null,false);
+		ShowDialog(context,message,MessageBoxType.OKOnly,null,false, null,null,false);
 	}
 	
 	public static void ShowInputDialog(Context context, String message, OnClickListener listener)
 	{
-		ShowDialog(context,message,MessageBoxType.OKOnly,new String[]{},false, listener,null,true);
+		ShowDialog(context,message,MessageBoxType.OKOnly, null ,false, listener,null,true);
 	}
 
 	public static void ShowMessageDialog(Context context, String message, MessageBoxType type , OnClickListener listener)
 	{
-		ShowDialog(context,message,type,new String[]{},false, listener,null, false);
+		ShowDialog(context,message,type, null ,false, listener,null, false);
 	}
 	
 	public static void ShowListDialog(Context context, String message, String[] listItems, boolean isMultiChoice, OnClickListener listener)
@@ -118,17 +122,27 @@ class Device
 	{
 		AlertDialog.Builder builder=new AlertDialog.Builder(context);
 		
-		if (listItems.length>0 && isMultiChoice==false)
+		if (listItems != null && isMultiChoice==false)
 		{
 			CheckedItems=new ArrayList<Integer>();//won't be used in this case.
-			builder.setTitle(message);
+			if (listItems.length==0) {
+				builder.setTitle("No records found.");
+				type = MessageBoxType.OKOnly;
+			}
+			else
+				builder.setTitle(message);
 			
 			builder.setItems(listItems, selectedItemListener);
 		}
-		else if (listItems.length>0 && isMultiChoice==true)
+		else if (listItems != null && isMultiChoice==true)
 		{
 			CheckedItems=new ArrayList<Integer>();
-			builder.setTitle(message);
+			if (listItems.length==0) {
+				builder.setTitle("No records found.");
+				type = MessageBoxType.OKOnly;
+			}
+			else
+				builder.setTitle(message);
 			
 			builder.setMultiChoiceItems(listItems, null, new OnMultiChoiceClickListener() 
 			{
@@ -159,7 +173,7 @@ class Device
 			}
 		}
 		
-		if (listItems.length==0 || isMultiChoice)
+		if (listItems ==null || listItems.length==0 || isMultiChoice)
 		{
 			switch(type)
 			{
@@ -241,3 +255,4 @@ class Device
 	}
 	
 }
+

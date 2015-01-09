@@ -26,7 +26,7 @@ import android.widget.TextView;
 public class NewDayTanksActivity extends ActionBarActivity implements android.view.View.OnClickListener {
 	private HashMap<Integer, int[]> TANKS = null;
 	private int SITE_ID = 0;
-	private String[] FIELDS = new String[]{"TOP", "BTM"};
+	private String[] FIELDS = new String[]{"TOPFT", "TOPIN" , "BTMFT", "BTMIN"};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
