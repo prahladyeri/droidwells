@@ -34,7 +34,7 @@ public class Export
 	
 	public static String ExportData(Context context, Cursor cursor, String filename)
 	{
-		String location= Environment.getExternalStorageDirectory() + "/" + filename +  ".csv";
+		String location= filename;//Environment.getExternalStorageDirectory() + "/" + filename +  ".csv";
 		PrintWriter writer=null;
 		try {
 			writer = new PrintWriter(location);

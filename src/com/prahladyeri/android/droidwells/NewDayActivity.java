@@ -65,7 +65,8 @@ public class NewDayActivity extends ActionBarActivity implements OnClickListener
 		for(int i=0;i<this.FIELDS.length;i++)
 		{
 			ed=new EditText(this);
-			ed.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+			ed.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+			//ed.setRawInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
 			int slen = (this.FIELDS[i] == "TOTAL" ? 8 : 4);
 			ed.setFilters(new InputFilter[] {new InputFilter.LengthFilter(slen+3), new DecimalInputFilter(slen, 2)});
 			ed.setHint(this.FIELDS[i]);

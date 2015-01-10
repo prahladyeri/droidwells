@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -147,7 +148,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 			final String[] yvalues= new String[cur.getCount()];
 			final String[] yfdates= new String[cur.getCount()];
 			final String[] ycompanies= new String[cur.getCount()];
-			final String[] fullFileName = {""};
+			final String[] fullFileName = {"", ""};
 			final Integer viewid=view.getId();
 			while(cur.moveToNext())
 			{
@@ -170,10 +171,27 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 					}
 					//Cursor cur=dbr.rawQuery("SELECT FDATE,TP, CP, CHK, FLW, LP , TEMP , MCF , TOTAL,COMMENT  FROM DAYENTRY,SITES WHERE DAYENTRY.SITE_ID=SITES.ID AND SITE_ID=? ORDER BY FDATE DESC LIMIT 500", new String[]{s});
 					
-					Cursor cur=dbr.rawQuery("SELECT COMPANY_NAME, SITE_NAME, FDATE,TP, CP, CHK, FLW, LP , TEMP , MCF , TOTAL,COMMENT  FROM DAYENTRY,SITES WHERE DAYENTRY.SITE_ID=SITES.ID AND SITE_ID in (" + Device.makePlaceholders(Device.CheckedItems.size()) +  ") AND FDATE = '"  + yfdates[0]  + "' ORDER BY FDATE DESC LIMIT 500", sites);
-					fullFileName[0] = Export.ExportData(MainActivity.this, cur, ycompanies[0] + "-" + yfdates[0].substring(0, 10)); 
-					
-					if (viewid == R.id.cmdmainEmailCSVData) {
+					final Cursor cur=dbr.rawQuery("SELECT COMPANY_NAME, SITE_NAME, FDATE,TP, CP, CHK, FLW, LP , TEMP , MCF , TOTAL,COMMENT  FROM DAYENTRY,SITES WHERE DAYENTRY.SITE_ID=SITES.ID AND SITE_ID in (" + Device.makePlaceholders(Device.CheckedItems.size()) +  ") AND FDATE = '"  + yfdates[0]  + "' ORDER BY FDATE DESC LIMIT 500", sites);
+					//fullFileName[0] = Export.ExportData(MainActivity.this, cur, ycompanies[0] + "-" + yfdates[0].substring(0, 10));
+					fullFileName[0] = ""; //The complete path
+					fullFileName[1] = ycompanies[0] + "-" + yfdates[0].substring(0, 10); //Just the filename w/o extension
+					if (viewid == R.id.cmdmainExportCSVData) {
+						//final String[] dirs = Device.getStorageDirectories();
+						final String[] dirs = StorageUtils.getStorageList();
+						Device.ShowListDialog(MainActivity.this, "Select Location", dirs, false, new DialogInterface.OnClickListener() {
+							
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								fullFileName[0] = dirs[which] + "/" + fullFileName[1] + ".csv";
+								Export.ExportData(MainActivity.this, cur,fullFileName[0]);
+								Toast.makeText(MainActivity.this, "CSV saved at " + fullFileName[0], Toast.LENGTH_LONG).show();
+							}
+						});
+					}
+					else { //Email csv data
+						fullFileName[0] = Environment.getExternalStorageDirectory() + "/" + fullFileName[1] + ".csv";
+						Export.ExportData(MainActivity.this, cur,fullFileName[0]);
+						
 						Device.ShowInputDialog(MainActivity.this, "Email id: ", new Dialog.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
@@ -183,9 +201,6 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 								}
 							}
 						});
-					}
-					else {
-						Toast.makeText(MainActivity.this, "CSV saved at " + fullFileName[0], Toast.LENGTH_LONG).show();
 					}
 				}
 			});

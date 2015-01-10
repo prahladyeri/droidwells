@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DbHelper extends SQLiteOpenHelper {
 	
 	public static final String DB_NAME = "droidwells";
-	public static final int DB_VERSION = 3;
+	public static final int DB_VERSION = 4;
 
 	public DbHelper(Context context) {
 		super(context, DbHelper.DB_NAME, null, DbHelper.DB_VERSION);
