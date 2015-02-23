@@ -67,6 +67,7 @@ public class StorageUtils {
         if (def_path_available) {
             paths.add(def_path);
             list.add(0, new StorageInfo(def_path, def_path_readonly, def_path_removable, def_path_removable ? cur_removable_number++ : -1));
+            slist.add(def_path);
         }
 
         BufferedReader buf_reader = null;

@@ -35,13 +35,15 @@ import android.text.InputType;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.widget.EditText;
+import android.widget.ListView;
 
 
 enum MessageBoxType
 {
 	OKOnly,
 	OkCancel,
-	YesNo
+	YesNo,
+	Custom3
 }
 
 class Device 
@@ -49,6 +51,16 @@ class Device
 	public static ArrayList<Integer> CheckedItems;
 	public static SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
 	public static EditText input=null;
+	
+	public static String[] concatArrays(String[] a, String[] b) 
+	{
+	   int aLen = a.length;
+	   int bLen = b.length;
+	   String[] c= new String[aLen+bLen];
+	   System.arraycopy(a, 0, c, 0, aLen);
+	   System.arraycopy(b, 0, c, aLen, bLen);
+	   return c;
+	}
 	
 	/**
 	 * Raturns all available SD-Cards in the system (include emulated)
@@ -167,25 +179,29 @@ class Device
 	
 	public static void ShowMessageDialog(Context context, String message)
 	{
-		ShowDialog(context,message,MessageBoxType.OKOnly,null,false, null,null,false);
+		ShowDialog(context,message,MessageBoxType.OKOnly,null,false, null,null,false,"","","");
 	}
 	
 	public static void ShowInputDialog(Context context, String message, OnClickListener listener)
 	{
-		ShowDialog(context,message,MessageBoxType.OKOnly, null ,false, listener,null,true);
+		ShowDialog(context,message,MessageBoxType.OKOnly, null ,false, listener,null,true,"","","");
+	}
+	
+	public static void ShowMessageDialog(Context context, String message, MessageBoxType type , OnClickListener listener) {
+		ShowMessageDialog(context, message, type , listener, "", "", "");
 	}
 
-	public static void ShowMessageDialog(Context context, String message, MessageBoxType type , OnClickListener listener)
+	public static void ShowMessageDialog(Context context, String message, MessageBoxType type , OnClickListener listener, String scustom1, String scustom2, String scustom3)
 	{
-		ShowDialog(context,message,type, null ,false, listener,null, false);
+		ShowDialog(context,message,type, null ,false, listener,null, false, scustom1, scustom2, scustom3);
 	}
 	
 	public static void ShowListDialog(Context context, String message, String[] listItems, boolean isMultiChoice, OnClickListener listener)
 	{
 		if (isMultiChoice)
-			ShowDialog(context, message, MessageBoxType.OkCancel , listItems, isMultiChoice, listener,null, false);
+			ShowDialog(context, message, MessageBoxType.OkCancel , listItems, isMultiChoice, listener,null, false,"","","");
 		else
-			ShowDialog(context, message, MessageBoxType.OKOnly , listItems, isMultiChoice, null,listener, false);
+			ShowDialog(context, message, MessageBoxType.OKOnly , listItems, isMultiChoice, null,listener, false,"","","");
 	}
 	
 	public static void ShowDateDialog(Context context,String message,OnDateSetListener listener)
@@ -202,7 +218,7 @@ class Device
 		dlg.show();
 	}
 	
-	private static void ShowDialog(Context context, String message, MessageBoxType type , String[] listItems, boolean isMultiChoice, OnClickListener listener,OnClickListener selectedItemListener, boolean inputBox)
+	private static void ShowDialog(Context context, String message, MessageBoxType type , String[] listItems, boolean isMultiChoice, OnClickListener listener,OnClickListener selectedItemListener, boolean inputBox, String scustom1, String scustom2, String scustom3)
 	{
 		AlertDialog.Builder builder=new AlertDialog.Builder(context);
 		
@@ -228,17 +244,32 @@ class Device
 			else
 				builder.setTitle(message);
 			
-			builder.setMultiChoiceItems(listItems, null, new OnMultiChoiceClickListener() 
+			final String[] tlistItems = listItems;
+			builder.setMultiChoiceItems(concatArrays(new String[]{"Select All"}, listItems) , null, new OnMultiChoiceClickListener() 
 			{
 				@Override
 				public void onClick(DialogInterface dialog, int which, boolean checked) 
 				{
-					if (checked)
-						CheckedItems.add(which);
+					if (which==0) { //select-all
+						AlertDialog dlg = (AlertDialog)dialog;
+						ListView view = dlg.getListView();
+						//bool val = (checked ? 1 : 0);
+						CheckedItems.clear();
+						for (int i=0;i< tlistItems.length;i++) {
+							view.setItemChecked(i+1,checked);
+							if (checked) CheckedItems.add(i);
+						}
+						
+						 return;
+					}
+					if (checked) 
+					{
+						CheckedItems.add(which-1);
+					}
 					else
 					{
-						if (CheckedItems.contains(which))
-							CheckedItems.remove(which);
+						if (CheckedItems.contains(which-1))
+							CheckedItems.remove(CheckedItems.indexOf(which-1));
 					}
 				}
 			});
@@ -271,6 +302,11 @@ class Device
 			case YesNo:
 				builder.setPositiveButton("Yes",listener);
 				builder.setNegativeButton("No",listener);
+				break;
+			case Custom3:
+				builder.setPositiveButton(scustom1,listener);
+				builder.setNegativeButton(scustom2,listener);
+				builder.setNeutralButton(scustom3,listener);
 				break;
 			}			
 		}

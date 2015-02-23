@@ -132,15 +132,11 @@ public class NewDayActivity extends ActionBarActivity implements OnClickListener
 			break;
 		case R.id.cmdnewdaySave:
 			//Save data to dayentry table
-			Date newdate=null;
-			try {
-				newdate = Device.sdf.parse( Device.sdf.format(new Date()) );
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
+			String snewdate=null;
+			snewdate = Device.sdf.format(new Date()); //Device.sdf.parse( 
 			Object[] values=new Object[12]; // siteid + fdate + fields(9) + comment
 			values[0] = this.SITE_ID;
-			values[1] = newdate;
+			values[1] = snewdate; //newdate;
 			for(int i=0;i<this.FIELDS.length;i++) {
 				Object tobj = ((EditText)findViewById(1000 + i)).getText();
 				if (tobj.toString().length()==0)
@@ -163,12 +159,13 @@ public class NewDayActivity extends ActionBarActivity implements OnClickListener
 			SQLiteDatabase db=new DbHelper(this).getWritableDatabase();
 			SQLiteDatabase dbr=new DbHelper(this).getReadableDatabase();
 			
-			db.execSQL("DELETE FROM DAYENTRY_TANKS WHERE DAYENTRY_ID IN (SELECT ID FROM DAYENTRY WHERE SITE_ID=? AND FDATE=?)",new Object[] {this.SITE_ID, newdate});
-			db.execSQL("DELETE FROM DAYENTRY WHERE SITE_ID=? AND FDATE=?",new Object[] {this.SITE_ID, newdate});
+			db.execSQL("DELETE FROM DAYENTRY_TANKS WHERE DAYENTRY_ID IN (SELECT ID FROM DAYENTRY WHERE SITE_ID=? AND FDATE=?)",new Object[] {this.SITE_ID, snewdate});
+			db.execSQL("DELETE FROM DAYENTRY WHERE SITE_ID=? AND FDATE=?",new Object[] {this.SITE_ID, snewdate});
 			
 			db.execSQL("INSERT INTO DAYENTRY(SITE_ID , FDATE , TP , CP , CHK , FLW , DIFF , LP , TEMP , MCF , TOTAL , COMMENT)" + 
 			" VALUES(?,?,?,?,?,?,?,?,?,?,?,?)", values);
-			Cursor cur= dbr.rawQuery("SELECT last_insert_rowid();", null);
+			//Cursor cur= dbr.rawQuery("SELECT last_insert_rowid();", null);
+			Cursor cur= dbr.rawQuery("SELECT MAX(ID) FROM DAYENTRY;", null);
 			cur.moveToFirst();
 		 	Integer id= cur.getInt(0);
 		 	for (Integer key : TANKS.keySet()) {

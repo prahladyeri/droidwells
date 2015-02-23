@@ -177,14 +177,20 @@ public class AddWellsActivity extends ActionBarActivity implements OnClickListen
 					et1.getText().toString(),
 					et2.getText().toString()
 			};
+			//Check whether site already exists
+			Cursor cur = dbr.rawQuery("SELECT * FROM SITES WHERE COMPANY_NAME=? AND SITE_NAME=?", new String[]{et1.getText().toString(), et2.getText().toString()});
+			if (cur.getCount()>0){
+				Device.ShowMessageDialog(this, "This company and site combination already exists.");
+				return;
+			}
 			//db.beginTransaction();
 			db.execSQL("INSERT INTO SITES(COMPANY_NAME,SITE_NAME) VALUES(?,?); ", ovals);
-			Cursor cur= dbr.rawQuery("SELECT last_insert_rowid();", null);
+			cur= dbr.rawQuery("SELECT last_insert_rowid();", null);
 			//Cursor cur= dbr.rawQuery("SELECT max(ID) from SITES;", null);
 			//db.endTransaction();
 			cur.moveToFirst();
 			final Integer siteid= cur.getInt(0);
-			Device.ShowMessageDialog(this, siteid.toString());
+			//Device.ShowMessageDialog(this, siteid.toString());
 			//ADD TANKS TO DATABASE
 			db.execSQL("DELETE FROM TANKS WHERE SITE_ID="  + siteid );
 			
