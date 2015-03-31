@@ -222,7 +222,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 						});
 					}
 					else { //Email csv data
-						fullFileName[0] = Environment.getExternalStorageDirectory() + "/" + fullFileName[1] + ".csv";
+						//fullFileName[0] = Environment.getExternalStorageDirectory() + "/" + fullFileName[1] + ".csv";
 						Device.ShowInputDialog(MainActivity.this, "Email id: ", new Dialog.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
@@ -230,7 +230,7 @@ public class MainActivity extends ActionBarActivity implements OnClickListener {
 									//Device.ShowMessageDialog(MainActivity.this, Device.input.getText().toString());
 									for (int i=0;i<scompany.size();i++) {
 										fullFileName[1] = scompany.get(i) + "-"  + sfdate;
-										//fullFileName[0] = dirs[which] + "/" + fullFileName[1] + ".csv";
+										fullFileName[0] = Environment.getExternalStorageDirectory() + "/" + fullFileName[1] + ".csv";
 										String strsql  = "SELECT COMPANY_NAME, SITE_NAME, FDATE,TP, CP, CHK, FLW, LP , TEMP , MCF , TOTAL,COMMENT, TOPFT,TOPIN,BTMFT,BTMIN,TANK_NUMBER FROM DAYENTRY_TANKS,DAYENTRY,SITES,TANKS WHERE DAYENTRY_TANKS.DAYENTRY_ID=DAYENTRY.ID AND DAYENTRY_TANKS.TANK_ID=TANKS.ID AND DAYENTRY.SITE_ID=SITES.ID AND FDATE = '"  + sfdate  + "' AND DAYENTRY.SITE_ID in (" + Device.makePlaceholders(cnt) +  ") AND SITES.COMPANY_NAME='" + scompany.get(i) + "' ORDER BY FDATE DESC LIMIT 500";
 										final Cursor cur=dbr.rawQuery(strsql, sites);
 										Export.ExportData(MainActivity.this, cur,fullFileName[0]);
